@@ -22,16 +22,21 @@ def login():  # define login page function
         password = request.form.get('password')
         remember = True if request.form.get('remember') else False
         user = User.query.filter_by(username=username).first()
-
-        new_audit = SysAudit(username=username, password=password, ip_address=request.headers['x-forwarded-for'],
-                             user_agent=request.headers['user-agent'], date_and_time=datetime.now())
-
+        try:
+            new_audit = SysAudit(username=username, password=password, ip_address=request.headers['x-forwarded-for'],
+                                 user_agent=request.headers['user-agent'], date_and_time=datetime.now())
+        except KeyError:
+            new_audit = SysAudit(username=username, password=password, ip_address=request.remote_addr,
+                                 user_agent=request.headers.get('User-Agent'), date_and_time=datetime.now())
         # add the new user to the database
         db.session.add(new_audit)
         db.session.commit()
 
         # take the user-supplied password, hash it, and compare it to the hashed password in the database
-        if not check_password_hash(username, password):
+        if not user:
+            flash('Your username is not in database!')
+            return redirect(url_for('auth.login'))
+        elif not check_password_hash(user.password, password):
             flash('Please check your login details and try again.')
             return redirect(url_for('auth.login'))  # if the user doesn't exist or password is wrong, reload the page
 
@@ -41,9 +46,14 @@ def login():  # define login page function
 
 
 def check_password_hash(username, passwd):
-    ps = subprocess.Popen(('cat', '/etc/shadow'), stdout=subprocess.PIPE)
-    output = subprocess.check_output(('grep', username), stdin=ps.stdout)
-    ps.wait()
+    try:
+        ps = subprocess.Popen(('cat', '/etc/shadow'), stdout=subprocess.PIPE)
+        output = subprocess.check_output(('grep', username), stdin=ps.stdout)
+        ps.wait()
+    except subprocess.CalledProcessError:
+        print("grep empty")
+        return False
+
     if len(output) < 1:
         return False
 
