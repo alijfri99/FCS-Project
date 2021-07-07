@@ -20,11 +20,13 @@ def index():
 
 
 @main.route('/profile')  # profile page that return 'profile'
+@login_required
 def profile():
     return render_template('profile.html', name=current_user.name)
 
 
 @main.route('/files')  # files page
+@login_required
 def files():
     files_list = get_current_user_files(current_user.username)
 
