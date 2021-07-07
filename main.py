@@ -1,6 +1,8 @@
 ########################################################################################
 ######################          Import packages      ###################################
 ########################################################################################
+import subprocess
+
 from flask import Blueprint, render_template, flash
 from flask_login import login_required, current_user
 from __init__ import create_app, db
@@ -22,9 +24,18 @@ def profile():
     return render_template('profile.html', name=current_user.name)
 
 
-@main.route('/files')  # profile page that return 'profile'
+@main.route('/files')  # files page
 def files():
-    return render_template('files.html', name=current_user.name)
+    files_list = get_current_user_files(current_user.username)
+
+    return render_template('files.html', name=current_user.name, files=files_list)
+
+
+def get_current_user_files(username):
+    output = subprocess.check_output(f"cd files && find -exec sudo -u {username} test -r '{{}}' \; -print",
+                                     shell=True).decode("utf-8")
+
+    return output.splitlines()[1:]
 
 
 app = create_app()  # we initialize our flask app using the __init__.py function

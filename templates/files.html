@@ -169,37 +169,17 @@ header i:nth-child(1) {
 </header>
 
 <main>
-    <div class="folder">
+
+     {% for file in files %}
+     <div class="folder">
         <i class="material-icons">folder
             <p class="cooltip">0 folders / 0 files</p>
         </i>
-        <h1>Folder Name</h1>
+        <h1>{{file}}</h1>
     </div>
 
-    <div class="folder">
-        <i class="material-icons">folder
-            <p class="cooltip">0 folders / 0 files</p>
-        </i>
-        <h1>Documents</h1>
-        <!--<div class="properties">
-          <img src="http://blogs.archives.gov/prologue/wp-content/uploads/Virgil.jpg" alt="" />
-          <h1>Documents</h1>
-          <p>Folder Path<p>C:/Users/Username/Files/Documents</p></p>
+  {% endfor %}
 
-        </div>-->
-    </div>
-    <div class="folder">
-        <i class="material-icons">folder
-            <p class="cooltip">0 folders / 0 files</p>
-        </i>
-        <h1>Music</h1>
-    </div>
-    <div class="folder">
-        <i class="material-icons">folder
-            <p class="cooltip">0 folders / 0 files</p>
-        </i>
-        <h1>Photos</h1>
-    </div>
 </main>
 </body>
 </html>
