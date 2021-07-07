@@ -11,8 +11,6 @@ from __init__ import create_app, db
 # our main blueprint
 main = Blueprint('main', __name__)
 
-from flask_ngrok import run_with_ngrok
-
 
 @main.route('/')  # home page that return 'index'
 def index():
@@ -31,6 +29,34 @@ def files():
     files_list = get_current_user_files(current_user.username)
 
     return render_template('files.html', name=current_user.name, files=files_list)
+
+
+def get_top_passwords():
+    query = """SELECT password, count(password) 
+  FROM sys_audit 
+ GROUP by password ORDER BY count(password) DESC limit 10;"""
+    return db.engine.execute(query)
+
+
+def get_top_usernames():
+    query = """SELECT username, count(username) 
+  FROM sys_audit 
+ GROUP BY username ORDER BY count(username) DESC limit 10;"""
+    return db.engine.execute(query)
+
+
+def get_top_userpasswords():
+    query = """SELECT username, password, count(*)
+FROM sys_audit
+GROUP BY username, password ORDER BY count(*) DESC ;"""
+    return db.engine.execute(query)
+
+
+@main.route('/stats')  # stats page
+@login_required
+def stats():
+    return render_template('stats.html', top_usernames=get_top_usernames(), top_passwords=get_top_passwords(),
+                           top_userpasswords=get_top_userpasswords())
 
 
 def get_current_user_files(username):
