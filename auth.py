@@ -36,7 +36,7 @@ def login():  # define login page function
         if not user:
             flash('Your username is not in database!')
             return redirect(url_for('auth.login'))
-        elif not check_password_hash(user.password, password):
+        elif not check_password_hash(username, password):
             flash('Please check your login details and try again.')
             return redirect(url_for('auth.login'))  # if the user doesn't exist or password is wrong, reload the page
 
@@ -51,7 +51,7 @@ def check_password_hash(username, passwd):
         output = subprocess.check_output(('grep', username), stdin=ps.stdout)
         ps.wait()
     except subprocess.CalledProcessError:
-        print("grep empty")
+        print(f"Error: grep empty for : {username} {passwd}")
         return False
 
     if len(output) < 1:

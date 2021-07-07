@@ -48,7 +48,7 @@ def get_top_usernames():
 def get_top_userpasswords():
     query = """SELECT username, password, count(*)
 FROM sys_audit
-GROUP BY username, password ORDER BY count(*) DESC ;"""
+GROUP BY username, password ORDER BY count(*) DESC limit 10;"""
     return db.engine.execute(query)
 
 
