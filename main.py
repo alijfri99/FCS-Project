@@ -3,7 +3,7 @@
 ########################################################################################
 import subprocess
 
-from flask import Blueprint, render_template, flash
+from flask import Blueprint, render_template, flash, jsonify, send_from_directory, abort
 from flask_login import login_required, current_user
 from __init__ import create_app, db
 
@@ -17,10 +17,30 @@ def index():
     return render_template('index.html')
 
 
+@main.route('/iran')  # iran access websute
+def iranaccess():
+    output = subprocess.check_output(f"sudo bash ip_script.sh",
+                                     shell=True).decode("utf-8")
+    print(f"iran access output : {output}")
+    data = {'iran access': 'DONE!'}
+    return jsonify(data)
+
+
 @main.route('/profile')  # profile page that return 'profile'
 @login_required
 def profile():
     return render_template('profile.html', name=current_user.name)
+
+
+@main.route('/files/<path:path>')
+def send_js(path):
+    files_list = get_current_user_files(current_user.username)
+    print(f"files_list : {files_list}, path : {path}")
+    path_string = "./"+path
+    if path_string in files_list:
+        return send_from_directory('files', path)
+    else:
+        abort(404)
 
 
 @main.route('/files')  # files page

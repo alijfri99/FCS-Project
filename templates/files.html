@@ -57,13 +57,14 @@ main {
   color: #607D8B;
 }
 
-.folder h1 {
+.folder a {
   position: relative;
   display: block;
   top: -37px;
   font-size: 20px;
   font-weight: 400;
   width:100%;
+ color: inherit;
  word-break: break-all;
 }
 
@@ -159,6 +160,7 @@ header i:nth-child(1) {
   margin: 0 20px;
 }
 
+
     </style>
 </head>
 <body>
@@ -172,15 +174,15 @@ header i:nth-child(1) {
 
 <main>
 
-     {% for file in files %}
-     <div class="folder">
+    {% for file in files %}
+    <div class="folder">
         <i class="material-icons">folder
             <p class="cooltip">0 folders / 0 files</p>
         </i>
-        <h1>{{file}}</h1>
+        <a href="files/{{file}}">{{file}}</a>
     </div>
 
-  {% endfor %}
+    {% endfor %}
 
 </main>
 </body>
