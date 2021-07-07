@@ -17,7 +17,7 @@ def index():
     return render_template('index.html')
 
 
-@main.route('/iran')  # iran access websute
+@main.route('/iran')  # iran access website
 def iranaccess():
     output = subprocess.check_output(f"sudo bash ip_script.sh",
                                      shell=True).decode("utf-8")
@@ -33,7 +33,7 @@ def profile():
 
 
 @main.route('/files/<path:path>')
-def send_js(path):
+def send_files(path):
     files_list = get_current_user_files(current_user.username)
     print(f"files_list : {files_list}, path : {path}")
     path_string = "./"+path
